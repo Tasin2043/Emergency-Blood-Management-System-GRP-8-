@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Donor List</title>
+  <script src="./js/dsearch.js"></script>
+</head>
+<body>
+
+
+   <h2>Donor List</h2>
+   
+   <form action= "../controller/donorlistAction.php" method="GET" name="mForm" onsubmit="getData(this); return false;">
+    <input type="text" name="bloodgroup">
+    <input type="submit" name="search" value="Search">
+  </form>
+  <br>
+  <div id="result"></div>
+
+</body>
+</html>
+<br>	
+ <?php include "../view/footer.html" ?>
+</body>
+</html>
