@@ -1,10 +1,7 @@
+<?php
 
-<?php 
-
-	session_start();
-    
-	session_destroy();
-
-	header("Location: ../controller/login.php");
-
+  session_start();
+  if(session_destroy()){
+      header('location:../view/login.php');
+  }
 ?>

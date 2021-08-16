@@ -1,344 +1,154 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-	<meta charset="utf-8">
-	<title> Registration Form</title>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
 </head>
-<body>
+<body style="text-align: center">
+<?php include ('../controller/registration.php');?>
+<div id="top-login-nav">
+    <ul>
+        <li>
+            <a href="./login.php">Login</a>
+        </li>
+        <li>
+            <a href="./registration.php">Registration</a>
+        </li>
+    </ul>
+</div>
 
-    <?php include "../view/header.html" ?>
+<div>
+    Registration to BloodBank
+    <form action="" method="post" onsubmit="return validateRegisterForm()">
 
-   
-    <?php 
-     require '../model/DbConnect.php';
-	 require '../model/DbInsert.php';
-	$successfulMessage = $errorMessage = "";
-	$firstnameErr = $lastnameErr = $genderErr = $dobErr = $phonenumberErr = $addressErr = $bloodgroupErr = $regforErr = $usernameErr = $passwordErr = "";
+        <input type="text" id="name"  name="name" placeholder="name"> <h6 id="name_error"></h6>
+        <br>
+        <br>
+        <input type="text" id="email" name="email" placeholder="email"> <h6 id="email_error"></h6>
+        <br>
+        <br>
+        <input type="password" id="password" name="password"  placeholder="password" > <h6 id="pass_error"></h6>
+        <br>
+        <br>
+        <input type="password" id="cpassword"  placeholder="Confirm password" ><h6 id="cpass_error"></h6>
+        <br>
+        <br>
+        <input type="number" id="phone_number" name="phone_number"  placeholder="Phone number" > <h6 id="phone_error"></h6>
+        <br>
+        <br>
+        Gender :
+        <select name="gender" id="">
+            <option value="male">male</option>
+            <option value="female">female</option>
+        </select>
+        <br>
 
-	if($_SERVER['REQUEST_METHOD'] === "POST") {
-		$firstname = $_POST['firstname'];
-		$lastname = $_POST['lastname'];
-		$gender = $_POST['gender'];
-		$dob = $_POST['dob'];
-        $phonenumber = $_POST['phonenumber'];
-        $address = $_POST['address'];
-        $bloodgroup = $_POST['bloodgroup'];
-        $regfor = $_POST['regfor'];
-		$username = $_POST['username'];
-		$password = $_POST['password'];
-		$isValid = true;
+        <br>
 
-
-		if(empty($firstname)) {
-			$firstnameErr = "Please fill it up!";
-			$isValid = false;
-		}
-		if(empty($lastname)) {
-			$lastnameErr = "Please fill it up!";
-			$isValid = false;
-		}
-
-
-		if(empty($dob)) {
-			$dobErr = "Please fill it up!";
-			$isValid = false;
-		}
-		
-		if(empty($phonenumber)) {
-			$phonenumberErr = "Give your personal number please!";
-			$isValid = false;
-		}
-		
-		if(empty($address)) {
-			$addressErr = "Please give Your District Only!";
-			$isValid = false;
-		}
-		
-		if(empty($bloodgroup)) {
-			$bloodgroupErr = "Select your Blood Group!";
-			$isValid = false;
-		}
-
-		if(empty($regfor)) {
-			$regforErr = "Select!";
-			$isValid = false;
-		}
-
-		if(empty($username)) {
-			$usernameErr = "Empty!";
-			$isValid = false;
-		}
-		if(empty($password)) {
-			$passwordErr = "Empty!";
-			$isValid = false;
-		}
+        blood gorup
+        <select name="blood_group" id="blood_group">
+            <option value="O+">O+</option>
+            <option value="O-">O-</option>
+            <option value="A+">A+</option>
+            <option value="A-">A-</option>
+            <option value="B+">B+</option>
+            <option value="B-">B-</option>
+            <option value="AB+">AB+</option>
+            <option value="AB-">AB-</option>
+        </select>
+        <br>
+        <br>
+        Home Town
+        <select name="location" id="location">
+            <option value="Dhaka">Dhaka</option>
+            <option value="Chittagong">Chittagong</option>
+            <option value="Sylhet">Sylhet</option>
+            <option value="Rajshahi">Rajshahi</option>
+            <option value="Rangpur">Rangpur</option>
+        </select>
+        <br>
+        <br>
+        <button type="submit">Register</button>
+        <button>Reset</button>
 
 
-		if($isValid) {
-			$firstname = test_input($firstname);
-			$lastname = test_input($lastname);
-			$gender = test_input($gender);
-		    $dob = test_input($dob);
-		    $phonenumber = test_input($phonenumber);
-            $address = test_input($address);
-            $bloodgroup = test_input($bloodgroup);
-            $regfor = test_input($regfor);
-			$username = test_input($username);
-			$password = test_input($password);
-			$response = register($firstname,$lastname,$gender,$dob,$phonenumber,$address,$bloodgroup,$regfor,$username,$password);
-
-			if($response) {
-					$successfulMessage = "Registration Successful!";
-				}
-			else {
-				$errorMessage = "You have to fill the form properly!";
-		   }
-          }
-		}
-	
-	function test_input($data) {
-			$data = trim($data);
-			$data = stripslashes($data);
-			$data = htmlspecialchars($data);
-			return $data;
-	}
-?>
-
-	<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" name = "registrationForm" onsubmit= "return isValid()">
-		<table border="3" bgcolor="white" align="center">
-<tr> <td>
-		<fieldset>
-
-			<legend> <span style="color: red;"> Registration Form:</legend>
-
-			<label for="firstname">First Name <span style="color: red;">*</span>:</label>&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;
-			<input type="text" name="firstname" id="firstname" style="
-    border-left-width: 1px;
-    padding-left: 1px;
-    width: 165px;
-">
-			<span style="color:red" id= "firstnameErr"><?php echo $firstnameErr; ?></span> <br><br>
-
-			<label for="lastname">Last Name <span style="color: red;">*</span>:</label>&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;
-			<input type="text" name="lastname" id="lastname" style="
-    border-left-width: 1px;
-    padding-left: 1px;
-    width: 165px;
-">
-			<span style="color:red" id= "lastnameErr"><?php echo $lastnameErr; ?></span> <br><br>
+    </form>
+</div>
 
 
-<label for="gender"> Gender <span style="color: red;">*</span>:</label> &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;
- <input  type= "radio" name="gender" id="gender" value="male"> 
- <label for="male">Male</label> 
- <input type="radio" name="gender" id="gender" value="female"> 
- <label for="female">Female</label> 
- <input type="radio" name="gender" id="gender" value="other"> 
- <label for="other">Other</label>
- <span style="color: red;" id= "genderErr"><?php echo $genderErr; ?></span> 
+<style>
+    *{
+        margin: 0px;
+        box-sizing: border-box;
+        text-align: center;
+    }
+    #top-login-nav{
+        background-color: rgb(150,100,100);
+        height:70px;
+        margin-bottom: 100px;
+    }
 
+    #top-login-nav ul li{
+        list-style-type: none;
+        margin:10px;
+        padding: 5px;
+        float: right;
+        background: aqua;
 
+    }
+    #top-login-nav ul li a{
 
- <br><br>
-
-
-
-            <label for="dob"> Date of birth<span style="color: red;">*</span>:</label>&nbsp; &nbsp;&nbsp;&nbsp;
-            <input type="date" id="dob" name="dob" style="
-    border-left-width: 1px;
-    padding-left: 1px;
-    width: 165px;
-">
-            <span style="color:red" id= "dobErr"><?php echo $dobErr; ?></span> <br><br>
-
-
-            <label for="phonenumber">Phone Number<span style="color: red;">*</span>:</label>&nbsp; 
-            <input type="tel" id="phonenumber" name="phonenumber" style="
-    border-left-width: 1px;
-    padding-left: 1px;
-    width: 165px;
-">
-            <span style="color:red" id= "phonenumberErr"><?php echo $phonenumberErr; ?></span><br><br>
-
-
-
-            <label for="address">Address <span style="color: red;">*</span>:</label>&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp; 
-            <input type="textarea" id="address" name="address" style="
-    border-left-width: 1px;
-    padding-left: 1px;
-    width: 165px;
-">
-            <span style="color:red" id= "addressErr"><?php echo $addressErr; ?></span> <br><br>
-
-
-
-            <label for="bloodgroup">Blood Group <span style="color: red;">*</span>: </label>&nbsp; &nbsp;
-  <select name="bloodgroup" id="bloodgroup" style="
-    border-left-width: 1px;
-    padding-left: 1px;
-    width: 165px;
-">
-      <option value=""></option>
-      <option value="A+">A+</option>
-      <option value="A-">A-</option>
-      <option value="B+">B+</option>
-      <option value="B-">B-</option>
-      <option value="O+">O+</option>
-      <option value="O-">O-</option>
-      <option value="AB+">AB+</option>
-      <option value="AB-">AB-</option>
-  
-            <span style="color:red" id= "bloodgroupErr"><?php echo $bloodgroupErr; ?></span> </select> <br><br>
-
-      <label for="regfor">Registration As <span style="color: red;">*</span>: </label>
-      <select name="regfor" id="regfor" style="
-    border-left-width: 1px;
-    padding-left: 1px;
-    width: 165px;
-">
-      <option value=""></option>
-      <option value="admin.php">Admin</option>
-      <option value="homepage.php">Donor </option>
-      <option value="homepage.php">Recipient</option>
-      <option value="homepage.php">Hospital Exicutive</option>
-      <span style="color:red" id= "regforErr"><?php echo $regforErr; ?></span> </select> 
-
-</fieldset>
-<br>
-<fieldset>
-    <legend> <span style="color: blue;"> Account Information:</legend>
-			<label for="username">User Name <span style="color: red;">*</span>:</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			<input type="text" name="username" id="username" style="
-    border-left-width: 1px;
-    padding-left: 1px;
-    width: 165px;
-">
-			<span style="color:red" id= "usernameErr"><?php echo $usernameErr; ?></span> <br><br>
-
-
-			<label for="password">Password <span style="color: red;">*</span>:</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			<input type="password" name="password" id="password" style="
-    border-left-width: 1px;
-    padding-left: 1px;
-    width: 165px;
-">
-			<span style="color:red" id= "passwordErr"><?php echo $passwordErr; ?></span>
-</fieldset>
-			<br>
-
-		&nbsp;&nbsp;&nbsp;
-		<input type="submit" name="submit" value="Register" style="
-		color: red;
-    padding-top: 3px;
-    padding-bottom: 3px;
-    border-right-width: 3px;
-    border-left-width: 3px;
-    width: 77.99432px;
-    height: 29.97728px;
-    border-top-width: 5px;
-    border-bottom-width: 5px;
-">
-	
-	</form>
-
-<p style ="color:green"><?php echo $successfulMessage; ?></p>
-<p style ="color:red"><?php echo $errorMessage; ?></p>
+        text-decoration: none;
+    }
+</style>
 
 <script>
 
-    function isvalid() {
-        var flag = true;
-        var firstnameErr = document.getElementById("firstnameErr");
-        var lastnameErr = document.getElementById("lastnameErr");
-        var genderErr = document.getElementById("genderErr");
-        var dobErr = document.getElementById("dobErr");
-        var phonenumberErr = document.getElementById("phonenumberErr");
-        var addressErr = document.getElementById("addressErr");
-        var bloodgroupErr = document.getElementById("bloodgroupErr");
-        var regforErr = document.getElementById("regforErr");
-        var usernameErr = document.getElementById("usernameErr");
-        var passwordErr = document.getElementById("passwordErr");
-
-        var firstname = document.forms["registrationForm"]["firstname"].value;
-        var lastname = document.forms["registrationForm"]["lastname"].value;
-        var gender = document.forms["registrationForm"]["gender"].value;
-        var dob = document.forms["registrationForm"]["dob"].value;
-        var phonenumber = document.forms["registrationForm"]["phonenumber"].value;
-        var address = document.forms["registrationForm"]["address"].value;
-        var bloodgroup = document.forms["registrationForm"]["bloodgroup"].value;
-        var regfor = document.forms["registrationForm"]["regfor"].value;
-        var username = document.forms["registrationForm"]["username"].value;
-        var password = document.forms["registrationForm"]["password"].value;
-        
-         firstnameErr.innerHTML= "";
-         lastnameErr.innerHTML = "";
-         genderErr.innerHTML = "";
-         dobErr.innerHTML= "";
-         phonenumberErr.innerHTML = "";
-         addressErr.innerHTML = "";
-         bloodgroupErr.innerHTML= "";
-         regforErr.innerHTML = "";
-         usernameErr.innerHTML = "";
-         passwordErr.innerHTML= "";
-         
-        if (firstname === "") {
-            flag = false;
-            firstnameErr.innerHTML =" Empty";
+    function validateRegisterForm()
+    {
+        var valid=true;
+        if(document.getElementById("name").value=="")
+        {
+            document.getElementById("name_error").innerText="please enter your name";
+            valid=false;
         }
-
-        if (lastname === "") {
-            flag = false;
-            lastnameErr.innerHTML ="Empty!";
+        if(document.getElementById("email").value=="")
+        {
+            document.getElementById("email_error").innerText="please enter your email";
+            valid=false;
         }
-
-         if (gender === "") {
-            flag = false;
-            genderErr.innerHTML ="Empty";
+        if(document.getElementById("password").value=="")
+        {
+            document.getElementById("pass_error").innerText="please enter your password";
+            valid=false;
         }
-
-        if (dob === "") {
-            flag = false;
-            dobErr.innerHTML ="Empty";
+        if(document.getElementById("password").value!=document.getElementById("cpassword").value)
+        {
+            document.getElementById("cpass_error").innerText="Password must be match";
+            valid=false;
         }
-
-        if (phonenumber === "") {
-            flag = false;
-            phonenumberErr.innerHTML ="Empty";
+        if(document.getElementById("cpassword").value=="")
+        {
+            document.getElementById("cpass_error").innerText="please confirm password";
+            valid=false;
         }
-
-        if (address === "") {
-            flag = false;
-            addressErr.innerHTML ="Empty";
+        if(document.getElementById("phone_number").value=="")
+        {
+            document.getElementById("phone_error").innerText="please enter your phone number";
+            valid=false;
         }
-
-        if (bloodgroup === "") {
-            flag = false;
-            bloodgroupErr.innerHTML ="Empty";
+        if(valid==true)
+        {
+            return true;
         }
-
-        if (regfor === "") {
-            flag = false;
-            regforErr.innerHTML ="Empty";
+        else{
+            return  false;
         }
-
-        if (username === "") {
-            flag = false;
-            usernameErr.innerHTML ="Empty";
-        }
-
-        if (password === "") {
-            flag = false;
-            passwordErr.innerHTML ="Empty";
-        }      
-
-    return flag;
-}
-
+    }
 </script>
 
-<hr>
-	<p>Back to <a href="../controller/login.php">Login</a></p>
-</td></tr>
-</table>
 </body>
 </html>
