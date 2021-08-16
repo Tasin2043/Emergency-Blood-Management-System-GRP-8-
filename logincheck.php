@@ -1,71 +1,70 @@
 <?php
-$nameerror=$passerror=$invalid_user="";
- if($_SERVER["REQUEST_METHOD"]=="POST")
- {
+   //include 'head.html'; 
+		$UserName = "";
+		$Password = "";
+		$UserNameErr = "";
+		$PasswordErr = "";
+	if( $_SERVER["REQUEST_METHOD"] == "POST"){
+	
+	
+	
+		if(empty($_POST['username'])){
+		echo "please fill up username properly"; 
+		echo "<br>";
+				 
+	}
+	else{
 
-     $username=$_POST["name"];
-     $password=$_POST["password"];
+		$UserName = $_POST['username'];
+		
 
+	}
+		if(empty($_POST['password'])){
+		echo "please fill up password properly"; 
+			echo "<br>";	 
+	}
+	else{
 
-    $valid=true;
-    if(empty($username))
-    {
-        $nameerror="please enter your username";
-        $valid=false;
-    }
-     if(empty($password))
-     {
-         $passerror="please enter your password";
-         $valid=false;
-     }
-     if($valid==true)
-     {
+		$Password = $_POST['password'];
+		
 
+	}
 
+}
+	session_start();
 
-         include('../model/db.php');
-         $sql= "select * from users where email='$username' and password='$password'";
+	include('../model/db.php');
+ 
+	$error="";
+	$msg ="";
 
-         $db=new db();
-         $conn=$db->OpenCon();
-         $data=$db->SelectQuery($conn,$sql);
+	if (isset($_POST['Submit'])) {
+		$username=$_POST['username'];
+		$password=$_POST['password'];
 
-         if(!empty($data)){
-             $data=$data->fetch_assoc();
-             // $type=$data['type'];
+		$connection = new db();
+		$conobj=$connection->OpenCon();
+		$userQuery=$connection->CheckUser($conobj,"executive",$username);
 
+		if($userQuery->num_rows > 0){
+			while($row = mysqli_fetch_assoc($userQuery)){
+				
+				$pass_w = $row["password"];//DB's data
 
-             if(!empty($data))
-             {
-                 session_start();
-                 $_SESSION['email']=$data['email'];
-                 $_SESSION['name']=$data['name'];
-                 $_SESSION['id']=$data['id'];
-                 $_SESSION['password']=$data['password'];
-                 $_SESSION['gender']=$data['gender'];
-                 $_SESSION['blood_group']=$data['blood_group'];
-                 $_SESSION['phone_number']=$data['phone_number'];
-                 $_SESSION['location']=$data['location'];
-                 header('location:./receiptenthome.php');
-             }
-             else{
-                 $invalid_user="Invalid user";
-             }
-         }
+				if ($pass_w == $password){
+						
+					$_SESSION['username']=$username;
+						header("location:../view/index.php");
+						
+				}
 
+				else{ echo "*Password is incorrect!";}
+			}
+		}
 
+		else {echo "*Username or Password is invalid";}
 
-         $db->CloseCon($conn);
+		$connection->CloseCon($conobj);
 
-
-
-
-     }
- }
-
-
-
-
-
-
+	}
 ?>
