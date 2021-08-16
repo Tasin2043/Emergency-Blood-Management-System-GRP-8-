@@ -1,64 +1,100 @@
-<?php  
+<!DOCTYPE html>
 
-session_start();
-$userName = isset($_SESSION['username']) ? $_SESSION['username'] : ""; 
+<?php
 
- 
-if(!isset($_SESSION['username']))
-{
+require_once('model/dbQuery.php');
 
-    header('location:login.php');
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
 }
+
+if (isLoggedIn()) {
+    header('location: profile.php');
+}
+?>
+
+<?php
+
+if (isset($_POST['email'])) {
+    $Pass = $_POST['password'];
+    $Email = $_POST['email'];
+
+    $loginData = getUserDB($Email);
+
+    if ($loginData) {
+        if (trim($loginData['password']) ===  trim($Pass)) {
+
+            $_SESSION['email'] = $Email;
+
+            header("Location: profile.php");
+        } else {
+            echo " <p style='color:red; text-align: center;'>Wrong Username Password</p>";
+        }
+    } else {
+        echo "The email is not registered yet";
+    }
+}
+
 
 ?>
 
-<html>
+
 <head>
- <title></title>
+    <title>Login</title>
+    <style>
+        h1 {
+            text-align: center;
+            color: maroon;
+        }
+
+        form {
+            text-align: left;
+            width: 90%;
+            margin: 0 auto;
+        }
+
+        legend {
+            margin: 0 auto;
+            color: maroon;
+        }
+
+        input {
+            margin: 5px 0;
+
+        }
+
+        p {
+            text-align: center;
+        }
+
+        button {
+            background-color: maroon;
+            color: white;
+            padding: 5px 10px;
+            margin: 15px 0;
+        }
+    </style>
 </head>
-<style >
-div.sticky {
-  position: -webkit-sticky;
-  position: sticky;
-  top: 0;
-  padding: 0px;
-  font-size: 18px;
-}
-</style>
+
 <body>
-  <header>
+    <h1>Emergency Blood Management System</h1>
 
+    <form action="" method="POST">
+        <fieldset>
+            <legend>Donor Login</legend><br>
 
-</header>
-  <div style=" background: tomato">
-  
-<div class="sticky">
- <b> <h1 style="background: grey " align="center">Welcome To Hospital Accounts Executive ,<?php echo $userName; ?></h1><b/>
-</div>
-  <h2>Homepage</h2>
-  
-  <ul>
+            <label for="email">Email</label><br>
+            <input type="email" name="email" required><br>
 
+            <label for="pass">Password</label><br>
+            <input type="password" name="password" required><br>
 
-<li><a href="checkprofile.php">Check profile</a><br><br>
-<li><a href="Update_Profile.php">Update Profile </a><br><br>
-<li><a href="../controller/Change_Password.php">Change Password </a><br><br>
-<li><a href="../controller/Update personal schedule.php">Update personal schedule </a><br><br>
-<li><a href="ExecutiveDetails.php">Search Executive List</a><br><br>
-<li><a href="RecipientsDetails.php">Check Recipients Details</a><br><br>
-<li><a href="logout.php">Logout</a><br><br>
-
- </ul>
-
-</div>
-</table><br>
-
-<br><br>
+            <button type="submit" value="Login">Login</button><br>
+        </fieldset>
+        <p>New User? <a href="register.php">Register here</a></p>
+    </form>
+    <br>
 
 </body>
-<?php
-include 'footer.html'
-?>
-
 
 </html>
