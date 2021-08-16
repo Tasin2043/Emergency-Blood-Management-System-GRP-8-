@@ -1,9 +1,10 @@
-<?php
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+<?php 
 
-$_SESSION['email'] = false;
+	session_start();
+    
+	session_destroy();
 
-header('location: index.php');
+	header("Location: ../controller/login.php");
+
+?>
