@@ -1,7 +1,9 @@
 <?php
 
-  session_start();
-  if(session_destroy()){
-      header('location:../view/login.php');
-  }
-?>
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+$_SESSION['email'] = false;
+
+header('location: index.php');
